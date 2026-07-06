@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="pl" data-lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>ID Ratunkowy — Michał Groll</title>
+<style>
+  :root{
+    --red:#C8102E;
+    --red-dark:#8F0B20;
+    --ink:#1A1A1A;
+    --paper:#FFFFFF;
+    --line:#E3E3E3;
+    --muted:#6B6B6B;
+    --amber:#B26A00;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--red);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* language toggle */
+  [data-lang="pl"] .lang-en{display:none;}
+  [data-lang="pl"] .lang-sep{display:none;}
+  [data-lang="en"] .lang-pl{display:none;}
+  [data-lang="en"] .lang-sep{display:none;}
+  .stack-gap{margin-bottom:10px;}
+
+  .topbar{
+    background:var(--red);
+    color:#fff;
+    padding:16px 18px 18px;
+  }
+  .topbar-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:10px;
+  }
+  .flag-btn{
+    border:none;
+    background:none;
+    padding:0;
+    cursor:pointer;
+    border-radius:5px;
+    line-height:0;
+    box-shadow:0 0 0 2px transparent;
+    transition:box-shadow .15s ease;
+  }
+  .flag-btn.active{
+    box-shadow:0 0 0 2px #fff;
+  }
+  .flag-btn svg{
+    display:block;
+    border-radius:4px;
+  }
+  .cross{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:30px;height:30px;
+    background:#fff;
+    border-radius:8px;
+    flex:0 0 auto;
+  }
+  .cross svg{width:16px;height:16px;}
+  .topbar h1{
+    text-align:center;
+    font-size:15px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    margin:0;
+    font-weight:800;
+  }
+
+  .card{
+    background:var(--paper);
+    border-radius:18px 18px 0 0;
+    max-width:520px;
+    margin:0 auto;
+    min-height:calc(100vh - 96px);
+    padding:22px 20px 40px;
+    box-shadow:0 -6px 24px rgba(0,0,0,.15);
+  }
+  .name{
+    font-size:26px;
+    font-weight:800;
+    line-height:1.15;
+    margin:0 0 2px;
+  }
+  .dob{
+    color:var(--muted);
+    font-size:18px;
+    font-weight:700;
+    margin-bottom:18px;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .box{
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:12px 14px;
+  }
+  .box.full{grid-column:1 / -1;}
+  .label{
+    font-size:10px;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+    color:var(--muted);
+    font-weight:700;
+    margin-bottom:4px;
+  }
+  .label.small{
+    font-size:9px;
+    margin-bottom:2px;
+  }
+  .value{
+    font-size:18px;
+    font-weight:700;
+  }
+  .value.blood{
+    color:var(--red-dark);
+    font-size:22px;
+  }
+  .banner{
+    background:#FDECEC;
+    border:1.5px solid var(--red);
+    border-radius:12px;
+    padding:14px 16px;
+    margin:18px 0;
+  }
+  .banner .label{color:var(--red-dark);}
+  .banner .value{
+    color:var(--red-dark);
+    font-size:17px;
+    line-height:1.35;
+  }
+  .banner .value b{font-size:19px;}
+  .banner-divider{
+    height:1px;
+    background:rgba(200,16,46,.25);
+    margin:14px 0 10px;
+  }
+  .banner .med-row{
+    border-bottom:1px solid rgba(200,16,46,.2);
+  }
+  .banner .med-name{color:var(--red-dark);}
+  .banner .med-dose{color:var(--red-dark);}
+  .emergency-steps .value{
+    font-weight:500;
+    font-size:15px;
+    line-height:1.5;
+  }
+  .emergency-steps .value b{font-size:15px;}
+  .section-title{
+    font-size:11px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--muted);
+    font-weight:800;
+    margin:22px 0 8px;
+    border-bottom:1px solid var(--line);
+    padding-bottom:6px;
+  }
+  .section-title.big{
+    font-size:15px;
+    letter-spacing:.04em;
+  }
+  .med-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    padding:10px 0;
+    border-bottom:1px solid var(--line);
+    gap:12px;
+  }
+  .med-row:last-child{border-bottom:none;}
+  .med-name{font-weight:700;font-size:15px;}
+  .med-dose{
+    font-size:14px;
+    color:var(--ink);
+    text-align:right;
+    font-weight:600;
+    white-space:nowrap;
+  }
+  .allergy-ok{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-weight:700;
+    color:#1a7a3c;
+    font-size:15px;
+  }
+  .contact{
+    margin-top:10px;
+    border:1.5px solid var(--ink);
+    border-radius:14px;
+    padding:14px 16px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+  }
+  .contact .info .label{margin-bottom:2px;}
+  .contact .info .value{font-size:16px;}
+  .contact .info .name{font-size:14px;font-weight:600;margin:0;}
+  .contact-stack{
+    flex-direction:column;
+    align-items:stretch;
+    gap:10px;
+  }
+  .contact-stack .info{margin-bottom:2px;}
+  .phone-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+  }
+  .phone-row .value{font-size:16px;}
+  .call-btn{
+    background:var(--red);
+    color:#fff;
+    text-decoration:none;
+    font-weight:800;
+    font-size:13px;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    padding:12px 16px;
+    border-radius:10px;
+    white-space:nowrap;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+  }
+  .call-112{
+    margin-top:12px;
+    display:block;
+    text-align:center;
+    background:var(--ink);
+    color:#fff;
+    text-decoration:none;
+    font-weight:800;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    font-size:14px;
+    padding:14px;
+    border-radius:12px;
+  }
+  .footer{
+    margin-top:26px;
+    text-align:center;
+    font-size:11px;
+    color:var(--muted);
+    line-height:1.6;
+  }
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="topbar-row">
+      <button id="btn-pl" class="flag-btn active" onclick="setLang('pl')" aria-label="Polski">
+        <svg width="44" height="30" viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg">
+          <rect width="20" height="7" fill="#fff"/>
+          <rect y="7" width="20" height="7" fill="#DC143C"/>
+        </svg>
+      </button>
+
+      <span class="cross">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="3" width="4" height="18" rx="1" fill="#C8102E"/>
+          <rect x="3" y="10" width="18" height="4" rx="1" fill="#C8102E"/>
+        </svg>
+      </span>
+
+      <button id="btn-en" class="flag-btn" onclick="setLang('en')" aria-label="English">
+        <svg width="44" height="30" viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg">
+          <rect width="20" height="14" fill="#00247D"/>
+          <path d="M0,0 L20,14 M20,0 L0,14" stroke="#fff" stroke-width="3"/>
+          <path d="M0,0 L20,14 M20,0 L0,14" stroke="#CF142B" stroke-width="1.2"/>
+          <path d="M10,0 V14 M0,7 H20" stroke="#fff" stroke-width="4"/>
+          <path d="M10,0 V14 M0,7 H20" stroke="#CF142B" stroke-width="2"/>
+        </svg>
+      </button>
+    </div>
+    <h1>
+      <span class="lang-pl">Identyfikator Ratunkowy</span><span class="lang-sep"> / </span><span class="lang-en">Emergency ID</span>
+    </h1>
+  </div>
+
+  <div class="card">
+
+    <div class="name">Michał Groll</div>
+    <div class="dob">
+      <span class="lang-pl">Data urodzenia: 14.01.1994</span><span class="lang-sep"> / </span><span class="lang-en">DOB: 14.01.1994</span>
+    </div>
+
+    <div class="grid">
+      <div class="box full">
+        <div class="label"><span class="lang-pl">Grupa krwi</span><span class="lang-sep"> / </span><span class="lang-en">Blood type</span></div>
+        <div class="value blood">A Rh+</div>
+      </div>
+      <div class="box full">
+        <div class="label"><span class="lang-pl">Waga / Wzrost</span><span class="lang-sep"> — </span><span class="lang-en">Weight / Height</span></div>
+        <div class="value">96 kg / 188 cm</div>
+      </div>
+      <div class="box full">
+        <div class="label"><span class="lang-pl">Alergie</span><span class="lang-sep"> / </span><span class="lang-en">Allergies</span></div>
+        <div class="allergy-ok">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="#1a7a3c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="lang-pl">Brak znanych alergii</span><span class="lang-sep"> / </span><span class="lang-en">None known</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="banner">
+      <div class="label"><span class="lang-pl">Rozpoznanie</span><span class="lang-sep"> / </span><span class="lang-en">Condition</span></div>
+      <div class="value">
+        <div class="lang-pl stack-gap"><b>Cukrzyca typu 1</b><br>Insulinozależna</div>
+        <div class="lang-en"><b>Type 1 Diabetes</b><br>Insulin-dependent</div>
+      </div>
+
+      <div class="banner-divider"></div>
+
+      <div class="label"><span class="lang-pl">Leczenie insuliną</span><span class="lang-sep"> / </span><span class="lang-en">Insulin therapy</span></div>
+      <div class="med-row">
+        <div class="med-name">Tresiba (<span class="lang-pl">baza</span><span class="lang-sep">/</span><span class="lang-en">basal</span>)</div>
+        <div class="med-dose">
+          <div class="lang-pl">24 j / dzień</div>
+          <div class="lang-en">24 units/day</div>
+        </div>
+      </div>
+      <div class="med-row">
+        <div class="med-name">Fiasp (bolus)</div>
+        <div class="med-dose">
+          <div class="lang-pl">wg potrzeb<br>1 j : 10 g węglowodanów</div>
+          <div class="lang-en">as needed<br>1 u : 10 g carbs</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title big">
+      <span class="lang-pl">W razie nieprzytomności</span><span class="lang-sep"> / </span><span class="lang-en">If unresponsive</span>
+    </div>
+    <div class="banner emergency-steps">
+      <div class="value">
+        <div class="lang-pl stack-gap">
+          Jeśli jestem przytomny i mogę przełykać — podaj mi cukier / dextrozę (mam w <b>nerce</b> na sobie).<br><br>
+          Jeśli <b>nie mogę przełykać — nie podawaj niczego doustnie.</b> Ułóż na boku i wezwij 112.<br><br>
+          Nie mam przy sobie GlucaGen'u.<br><br>
+          Mam sensor <b>FreeStyle Libre 2</b> na ramieniu — odczyt tylko w aplikacji w telefonie, który jest zablokowany.<br><br>
+          Moje zachowanie (dezorientacja, bełkotliwa mowa, agresja) może wyglądać jak upojenie alkoholowe — <b>to niedocukrzenie, nie alkohol.</b>
+        </div>
+        <div class="lang-en">
+          If I'm conscious and able to swallow — give me sugar / dextrose (in the <b>belt bag</b> I wear).<br><br>
+          If I <b>can't swallow — do not give anything by mouth.</b> Place on side and call emergency services.<br><br>
+          I do not carry GlucaGen.<br><br>
+          I wear a <b>FreeStyle Libre 2</b> sensor on my arm — reading only via phone app, phone is locked.<br><br>
+          My behavior (confusion, slurred speech, aggression) may look like alcohol intoxication — <b>it's low blood sugar, not alcohol.</b>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">
+      <span class="lang-pl">Lekarz prowadzący</span><span class="lang-sep"> / </span><span class="lang-en">Treating physician</span>
+    </div>
+    <div class="contact contact-stack">
+      <div class="info">
+        <div class="label"><span class="lang-pl">Diabetolog</span><span class="lang-sep"> / </span><span class="lang-en">Diabetologist</span></div>
+        <div class="name">dr n. med. Alicja Popiołek</div>
+      </div>
+      <div class="phone-row">
+        <div>
+          <div class="label small">Centrum Medyczne Evitus</div>
+          <div class="value">729 116 759</div>
+        </div>
+        <a class="call-btn" href="tel:+48729116759">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.5 2.3.8 3.6.8.6 0 1 .4 1 1v3.5c0 .6-.4 1-1 1C10.6 21.3 2.7 13.4 2.7 4.9c0-.6.4-1 1-1H7c.6 0 1 .4 1 1 0 1.3.3 2.5.8 3.6.2.3.1.7-.2 1L6.6 10.8z"/></svg>
+          <span class="lang-pl">Zadzwoń</span><span class="lang-en">Call</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="section-title">
+      <span class="lang-pl">Kontakt w razie wypadku</span><span class="lang-sep"> / </span><span class="lang-en">Emergency contact</span>
+    </div>
+    <div class="contact">
+      <div class="info">
+        <div class="name">Aleksandra Zielińska</div>
+        <div class="value">+48 733 673 896</div>
+      </div>
+      <a class="call-btn" href="tel:+48733673896">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.5 2.3.8 3.6.8.6 0 1 .4 1 1v3.5c0 .6-.4 1-1 1C10.6 21.3 2.7 13.4 2.7 4.9c0-.6.4-1 1-1H7c.6 0 1 .4 1 1 0 1.3.3 2.5.8 3.6.2.3.1.7-.2 1L6.6 10.8z"/></svg>
+        <span class="lang-pl">Zadzwoń</span><span class="lang-en">Call</span>
+      </a>
+    </div>
+
+    <a class="call-112" href="tel:112">
+      <span class="lang-pl">W nagłym wypadku zadzwoń pod 112</span><span class="lang-sep"> / </span><span class="lang-en">In case of emergency call 112</span>
+    </a>
+
+    <div class="section-title">
+      <span class="lang-pl">Adres</span><span class="lang-sep"> / </span><span class="lang-en">Address</span>
+    </div>
+    <div class="contact">
+      <div class="info">
+        <div class="value">ul. Modrakowa 42/22</div>
+        <div class="name">85-864 Bydgoszcz</div>
+      </div>
+      <a class="call-btn" href="https://www.google.com/maps/search/?api=1&query=Modrakowa+42%2F22%2C+85-864+Bydgoszcz" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M12 2C7.6 2 4 5.6 4 10c0 5.2 6.4 11 7.3 11.7.4.3 1 .3 1.4 0C13.6 21 20 15.2 20 10c0-4.4-3.6-8-8-8zm0 10.8c-1.5 0-2.8-1.3-2.8-2.8S10.5 7.2 12 7.2s2.8 1.3 2.8 2.8-1.3 2.8-2.8 2.8z"/></svg>
+        <span class="lang-pl">Mapa</span><span class="lang-en">Map</span>
+      </a>
+    </div>
+
+    <div class="footer">
+      <div class="lang-pl stack-gap">Ta strona zawiera dane medyczne udostępnione przez właściciela opaski/karty NFC w celach ratunkowych.</div>
+      <div class="lang-en">This page contains medical information shared by the wristband/NFC tag owner for emergency purposes.</div>
+    </div>
+
+  </div>
+
+  <script>
+    function setLang(lang){
+      var html = document.documentElement;
+      var current = html.getAttribute('data-lang');
+      var next = (current === lang) ? 'both' : lang;
+      html.setAttribute('data-lang', next);
+      document.getElementById('btn-pl').classList.toggle('active', next === 'pl' || next === 'both');
+      document.getElementById('btn-en').classList.toggle('active', next === 'en' || next === 'both');
+    }
+  </script>
+
+</body>
+</html>
