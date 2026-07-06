@@ -265,8 +265,8 @@
 </style>
 </head>
 <body>
-
-  <div class="topbar">
+<header class="topbar" role="banner">
+  <!-- <div class="topbar"> -->
     <div class="topbar-row">
       <button id="btn-pl" class="flag-btn active" onclick="setLang('pl')" aria-label="Polski">
         <svg width="44" height="30" viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg">
@@ -295,9 +295,11 @@
     <h1>
       <span class="lang-pl">Identyfikator Ratunkowy</span><span class="lang-sep"> / </span><span class="lang-en">Emergency ID</span>
     </h1>
-  </div>
+  <!-- </div> -->
+</header>
 
-  <div class="card">
+<main class="card" role="main">
+  <!-- <div class="card"> -->
 
     <div class="name">Michał Groll</div>
     <div class="dob">
@@ -427,7 +429,8 @@
       <div class="lang-en">This page contains medical information shared by the wristband/NFC tag owner for emergency purposes.</div>
     </div>
 
-  </div>
+  <!-- </div> -->
+   </main>
 
   <script>
     function setLang(lang){
